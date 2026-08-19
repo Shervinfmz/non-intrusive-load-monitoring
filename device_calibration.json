@@ -1,0 +1,111 @@
+{
+  "COOLER_FAN1": {
+    "P": 32.93,
+    "Q": 55.87,
+    "family": "Cooler",
+    "n_obs": 6,
+    "thd_i": 12.0
+  },
+  "COOLER_FAN1 Stufe 1": {
+    "P": 22.34,
+    "Q": 36.02,
+    "family": "Cooler",
+    "n_obs": 1,
+    "thd_i": 12.6
+  },
+  "COOLER_FAN1 Stufe 2": {
+    "P": 29.05,
+    "Q": 45.1,
+    "family": "Cooler",
+    "n_obs": 3,
+    "thd_i": 11.5
+  },
+  "TABLE_FAN": {
+    "P": 17.13,
+    "Q": 23.6,
+    "n_obs": 6,
+    "thd_i": 10.8
+  },
+  "Monitor": {
+    "P": 16.26,
+    "Q": 0.62,
+    "n_obs": 6,
+    "thd_i": 165.5
+  },
+  "INCENDESCENT_LIGHT": {
+    "P": 493.16,
+    "Q": -2.91,
+    "n_obs": 2,
+    "thd_i": 4.8
+  },
+  "COFFEE_MACHINE": {
+    "P": 1231.54,
+    "Q": -4.02,
+    "n_obs": 2,
+    "thd_i": 2.3
+  },
+  "WATER_HEATER": {
+    "P": 946.04,
+    "Q": -2.92,
+    "n_obs": 2,
+    "thd_i": 2.1
+  },
+  "Toaster": {
+    "P": 708.97,
+    "Q": 1.04,
+    "n_obs": 1,
+    "thd_i": 2.2
+  },
+  "Foen Stufe 1": {
+    "P": 197.13,
+    "Q": -0.18,
+    "family": "Foen",
+    "n_obs": 1,
+    "thd_i": 6.4
+  },
+  "Foen Stufe 2": {
+    "P": 225.98,
+    "Q": -188.43,
+    "family": "Foen",
+    "n_obs": 1,
+    "thd_i": 76.1
+  },
+  "Foen Stufe 3": {
+    "P": 991.51,
+    "Q": 2.8,
+    "family": "Foen",
+    "n_obs": 1,
+    "thd_i": 2.4
+  },
+  "USB Ladeger\u00e4t": {
+    "P": 30.45,
+    "Q": -3.15,
+    "n_obs": 1,
+    "varies": true,
+    "thd_i": 156.1,
+    "thd_i_range": [
+      144,
+      248
+    ],
+    "p_range": [
+      1.5,
+      32.0
+    ]
+  },
+  "PV": {
+    "P": -7.0,
+    "Q": -17.3,
+    "generator": true,
+    "varies": true,
+    "p_range": [
+      -35.0,
+      1.0
+    ],
+    "thd_i": 26.0,
+    "thd_i_range": [
+      20,
+      40
+    ],
+    "n_obs": 1
+  }
+}

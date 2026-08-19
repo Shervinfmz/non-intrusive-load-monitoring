@@ -1,0 +1,4 @@
+scenario,n,ARI,purity
+synthetic_only,1200,0.787,0.83
+real_only,29,0.217,0.69
+real_plus_synth,1229,0.797,0.796

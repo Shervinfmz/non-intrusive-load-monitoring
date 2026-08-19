@@ -1,0 +1,12 @@
+Device,Peak_W,On_P_W,On_Q_var,PF,THD_i_%,Cycles,Character
+COFFEE_MACHINE,1354.2,1215.46,2.448,1.0,2.037,2,resistive
+light_cooler_monitor,545.8,517.618,29.805,0.997,2.327,1,resistive
+INCENDESCENT_LIGHT,659.3,502.653,-0.165,0.998,1.81,2,resistive
+Laptop,64.8,46.283,-9.269,0.464,180.17,3,non-linear
+Leuchtstoffroehre,40.0,38.183,78.267,0.436,10.597,1,inductive
+FLOUROSCENT_LAMP,40.5,36.809,97.133,0.353,9.0,2,inductive
+COOLER_FAN1,35.4,30.495,48.04,0.531,11.642,4,inductive
+Monitor,18.1,17.943,-3.018,0.504,165.544,2,non-linear
+Mixer,71.2,16.901,1.911,0.539,150.307,1,non-linear
+CPU,12.9,9.54,-5.196,0.458,162.364,2,non-linear
+LED Lampe 6.3 W,6.7,6.694,-4.613,0.742,47.96,1,non-linear

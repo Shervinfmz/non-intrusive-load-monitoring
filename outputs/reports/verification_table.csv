@@ -1,0 +1,61 @@
+feature,real_mean,synth_mean_p05,synth_mean_p95,mean_pass,real_std,synth_std_p05,synth_std_p95,noise_pass,informational,device
+p_total_w,1215.46,1119.089,1310.611,True,23.388,21.48,25.141,True,False,COFFEE_MACHINE
+q_total_var,2.448,2.24,2.633,True,0.241,0.22,0.263,True,False,COFFEE_MACHINE
+pf_total,1.0,1.0,1.0,False,0.005,0.0,0.0,False,True,COFFEE_MACHINE
+thd_i_l1_percent,2.037,2.022,2.052,True,0.14,0.13,0.152,True,False,COFFEE_MACHINE
+p_total_w,30.495,28.176,33.155,True,3.397,3.068,3.665,True,False,COOLER_FAN1
+q_total_var,48.04,44.105,52.182,True,6.38,5.776,6.94,True,False,COOLER_FAN1
+pf_total,0.531,0.491,0.578,True,0.019,0.057,0.073,False,True,COOLER_FAN1
+thd_i_l1_percent,11.642,11.577,11.714,True,0.479,0.44,0.518,True,False,COOLER_FAN1
+p_total_w,9.54,8.803,10.3,True,0.648,0.586,0.709,True,False,CPU
+q_total_var,-5.196,-5.612,-4.817,True,0.028,0.025,0.03,True,False,CPU
+pf_total,0.458,0.854,0.9,False,0.007,0.011,0.017,False,True,CPU
+thd_i_l1_percent,162.364,162.174,162.511,True,1.637,1.516,1.777,True,False,CPU
+p_total_w,36.809,33.629,39.824,True,0.687,0.623,0.741,True,False,FLOUROSCENT_LAMP
+q_total_var,97.133,90.598,104.556,True,1.786,1.642,1.924,True,False,FLOUROSCENT_LAMP
+pf_total,0.353,0.321,0.386,True,0.004,0.007,0.009,False,True,FLOUROSCENT_LAMP
+thd_i_l1_percent,9.0,8.982,9.017,True,0.163,0.149,0.179,True,False,FLOUROSCENT_LAMP
+p_total_w,502.653,461.289,544.646,True,19.325,17.919,21.131,True,False,INCENDESCENT_LIGHT
+q_total_var,-0.165,-0.187,-0.144,True,0.129,0.119,0.141,True,False,INCENDESCENT_LIGHT
+pf_total,0.998,1.0,1.0,False,0.023,0.0,0.0,False,True,INCENDESCENT_LIGHT
+thd_i_l1_percent,1.81,1.765,1.856,True,0.358,0.328,0.388,True,False,INCENDESCENT_LIGHT
+p_total_w,46.283,42.595,50.408,True,17.695,16.213,19.279,True,False,Laptop
+q_total_var,-9.269,-10.055,-8.377,True,3.037,2.772,3.262,True,False,Laptop
+pf_total,0.464,0.932,0.971,False,0.032,0.041,0.202,False,True,Laptop
+thd_i_l1_percent,180.17,178.713,181.645,True,13.308,12.287,14.464,True,False,Laptop
+p_total_w,17.943,16.369,19.165,True,0.731,0.66,0.792,True,False,Monitor
+q_total_var,-3.018,-3.235,-2.804,True,0.038,0.035,0.041,True,False,Monitor
+pf_total,0.504,0.982,0.989,False,0.006,0.001,0.002,False,True,Monitor
+thd_i_l1_percent,165.544,164.026,167.198,True,12.893,11.746,14.095,True,False,Monitor
+p_total_w,13.376,12.163,14.557,True,2.811,2.535,3.069,True,False,TABLE_FAN
+q_total_var,18.514,17.062,20.244,True,4.228,3.9,4.619,True,False,TABLE_FAN
+pf_total,0.583,0.536,0.632,True,0.009,0.107,0.132,False,True,TABLE_FAN
+thd_i_l1_percent,10.804,10.741,10.862,True,0.547,0.503,0.598,True,False,TABLE_FAN
+p_total_w,955.017,879.232,1046.574,True,20.605,19.101,22.696,True,False,WATER_HEATER
+q_total_var,2.623,2.439,2.844,True,0.008,0.009,0.011,False,False,WATER_HEATER
+pf_total,0.999,1.0,1.0,False,0.012,0.0,0.0,False,True,WATER_HEATER
+thd_i_l1_percent,1.819,1.797,1.846,True,0.195,0.176,0.216,True,False,WATER_HEATER
+p_total_w,138.165,124.294,147.996,True,8.143,7.558,8.88,True,False,Foen Stufe 1
+q_total_var,-9.285,-9.94,-8.457,True,0.583,0.539,0.631,True,False,Foen Stufe 1
+pf_total,0.899,0.997,0.998,False,0.04,0.0,0.001,False,True,Foen Stufe 1
+thd_i_l1_percent,47.262,47.184,47.353,True,0.681,0.617,0.745,True,False,Foen Stufe 1
+p_total_w,6.694,6.101,7.204,True,0.012,0.011,0.013,True,False,LED Lampe 6.3 W
+q_total_var,-4.613,-4.994,-4.199,True,0.016,0.014,0.017,True,False,LED Lampe 6.3 W
+pf_total,0.742,0.789,0.854,False,0.001,0.001,0.001,False,True,LED Lampe 6.3 W
+thd_i_l1_percent,47.96,47.932,47.982,True,0.217,0.2,0.235,True,False,LED Lampe 6.3 W
+p_total_w,38.183,35.411,40.899,True,3.697,3.386,4.017,True,False,Leuchtstoffroehre
+q_total_var,78.267,73.113,84.595,True,7.443,6.798,8.078,True,False,Leuchtstoffroehre
+pf_total,0.436,0.403,0.478,True,0.052,0.043,0.053,True,True,Leuchtstoffroehre
+thd_i_l1_percent,10.597,10.438,10.737,True,1.274,1.141,1.4,True,False,Leuchtstoffroehre
+p_total_w,16.901,15.877,18.629,True,6.792,8.734,10.542,False,False,Mixer
+q_total_var,1.911,1.214,2.76,True,6.192,5.73,6.787,True,False,Mixer
+pf_total,0.539,0.82,0.899,False,0.191,0.192,0.368,False,True,Mixer
+thd_i_l1_percent,150.307,144.232,156.417,True,59.921,55.062,64.779,True,False,Mixer
+p_total_w,1397.475,1268.553,1502.553,True,99.101,90.859,107.92,True,False,Toaster
+q_total_var,2.756,2.424,3.114,True,2.083,1.919,2.255,True,False,Toaster
+pf_total,0.996,1.0,1.0,False,0.062,0.0,0.0,False,True,Toaster
+thd_i_l1_percent,2.658,5.36,7.319,False,12.033,7.053,8.788,False,False,Toaster
+p_total_w,9.407,8.621,10.314,True,3.044,2.77,3.319,True,False,USB Ladegerät
+q_total_var,-0.574,-0.652,-0.519,True,0.43,0.395,0.47,True,False,USB Ladegerät
+pf_total,0.523,0.983,0.997,False,0.036,0.005,0.146,True,True,USB Ladegerät
+thd_i_l1_percent,158.864,156.915,160.904,True,15.966,14.645,17.437,True,False,USB Ladegerät

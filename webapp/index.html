@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PAC4200 NILM Monitor</title>
+<style>
+  :root{
+    --teal:#009b9b; --teal-d:#00726f; --green:#78be20; --green-d:#5f9a15;
+    --ink:#26313a; --muted:#75828d; --line:#dde4e9; --bg:#eef2f4; --card:#fff;
+    --warn:#d9822b; --bad:#d94a3d; --ok:#2f9e44;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:14px "Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+
+  /* ---------- header: EMPRO-style gradient ---------- */
+  header{display:flex;align-items:center;gap:14px;padding:11px 20px;
+    background:linear-gradient(90deg,#00787a 0%,#009b9b 45%,#5aa81e 100%);
+    color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .logo i{width:14px;height:14px;border-radius:50%;display:inline-block;margin-right:4px;
+          background:rgba(255,255,255,.85)}
+  .logo i:nth-child(even){background:rgba(255,255,255,.45)}
+  .brand{font-weight:800;letter-spacing:.3px}
+  .devlabel{color:rgba(255,255,255,.85);font-size:13px}
+  .badge{font-size:11px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+         border-radius:9px;padding:2px 8px;font-weight:700}
+  header .status{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px}
+  .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.5)}
+  .dot.live{background:#c6ff5e;box-shadow:0 0 9px #c6ff5e}
+  .dot.stale{background:#ffb3ab;box-shadow:0 0 9px #ff6a5a}
+
+  .layout{display:grid;grid-template-columns:228px 1fr;min-height:calc(100vh - 52px)}
+  .side{background:linear-gradient(180deg,#ffffff 0%,#f7fafb 100%);
+        border-right:1px solid var(--line);padding:14px 0}
+  .side h3{font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin:16px 18px 6px}
+  .nav a{display:block;padding:9px 18px;color:var(--ink);text-decoration:none;font-size:13px;cursor:pointer}
+  .nav a:hover{background:#eef5f5}
+  .nav a.active{background:linear-gradient(90deg,#e2f3f2,#f4faf3);color:var(--teal-d);
+                border-left:3px solid var(--teal);font-weight:700;padding-left:15px}
+  .ctrl{padding:0 18px}
+  .ctrl label{display:block;font-size:12px;color:var(--muted);margin:11px 0 4px}
+  .ctrl select{width:100%;padding:7px;border:1px solid var(--line);border-radius:5px;background:#fff}
+  .ctrl input[type=range]{width:100%}
+  .ctrl button{width:100%;border:none;border-radius:5px;padding:9px;margin-top:8px;
+               font-weight:700;cursor:pointer;color:#fff}
+  .b-go{background:linear-gradient(90deg,#009b9b,#57a81f)}
+  .b-stop{background:linear-gradient(90deg,#d94a3d,#b93a2e)}
+  .b-reset{background:#eef2f4;color:var(--ink);border:1px solid var(--line)}
+
+  .main{padding:16px 20px}
+  .crumb{font-size:18px;font-weight:700;margin:0 0 12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:7px;
+        overflow:hidden;margin-bottom:12px;box-shadow:0 1px 3px rgba(20,40,50,.06)}
+  .card .hd{padding:9px 12px;font-size:12px;font-weight:700;color:#43525d;
+            border-bottom:1px solid var(--line);
+            background:linear-gradient(180deg,#f7fafb,#eef4f5);
+            border-top:3px solid var(--teal)}
+  .card .bd{padding:10px 12px}
+
+  .banner{display:flex;align-items:center;gap:14px;border-radius:7px;padding:11px 14px;margin-bottom:12px;
+          background:linear-gradient(90deg,#e4f4f2 0%,#f2f8ea 100%);border:1px solid #cfe6e0}
+  .banner .lab{font-size:11px;letter-spacing:1px;color:var(--teal-d);text-transform:uppercase;font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{background:linear-gradient(180deg,#ffffff,#eef7f5);border:1px solid #b9ddd7;color:var(--teal-d);
+        border-radius:14px;padding:5px 13px;font-size:13px;font-weight:700}
+  .none{color:var(--muted);font-style:italic}
+  .stalebox{display:none;background:#fdecea;border:1px solid #f3b7b1;color:#9c2c22;
+            border-radius:7px;padding:9px 12px;margin-bottom:12px;font-size:13px}
+
+  canvas{width:100%;height:280px;display:block}
+  .legend{font-size:11px;color:var(--muted);margin-top:6px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px}
+  .rowv{display:flex;justify-content:space-between;padding:5px 0;font-size:13px}
+  .rowv .k{color:var(--muted)} .rowv .v{font-weight:700}
+  .rowv .u{color:var(--muted);font-weight:400;font-size:12px;margin-left:3px}
+
+  .two{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
+  .big{font-size:28px;font-weight:800;color:var(--teal-d);margin:2px 0;min-height:34px}
+  .big.off{color:var(--warn)}
+  .kv{font-size:13px;color:var(--muted);margin:2px 0}.kv b{color:var(--ink)}
+  .bar{height:9px;background:#eef2f4;border:1px solid var(--line);border-radius:5px;overflow:hidden;margin:6px 0}
+  .bar>span{display:block;height:100%;background:linear-gradient(90deg,#009b9b,#78be20);width:0}
+  .log{font-family:Consolas,monospace;font-size:11.5px;line-height:1.65;max-height:210px;overflow:auto}
+  .log .on{color:var(--ok);font-weight:700}.log .off{color:var(--warn);font-weight:700}
+  /* left-sidebar on/off event list */
+  .sideEvents{padding:0 18px 6px;font-family:Consolas,monospace;font-size:11.5px;
+              line-height:1.4;max-height:300px;overflow:auto}
+  .sideEvents .ev{display:flex;justify-content:space-between;gap:10px;
+                  padding:4px 0;border-bottom:1px solid #eef2f4}
+  .sideEvents .ev .d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sideEvents .ev .t{color:var(--muted);flex:none}
+  .sideEvents .on{color:var(--ok);font-weight:700}
+  .sideEvents .off{color:var(--warn);font-weight:700}
+
+  /* unknown / onboarding */
+  #unkCard .hd{border-top-color:var(--warn);background:linear-gradient(180deg,#fdf6ec,#faeedd);color:#8a5a17}
+  .lt{display:inline-block;border-radius:12px;padding:3px 11px;font-size:11px;font-weight:800;
+      color:#fff;letter-spacing:.4px;text-transform:uppercase}
+  .lt.resistive{background:linear-gradient(90deg,#d9822b,#c2691c)}
+  .lt.inductive{background:linear-gradient(90deg,#2f7ec4,#245f96)}
+  .lt.capacitive{background:linear-gradient(90deg,#8256c4,#63409b)}
+  .onb{display:flex;gap:8px;margin-top:10px}
+  .onb input{flex:1;padding:8px;border:1px solid var(--line);border-radius:5px}
+  .onb button{border:none;border-radius:5px;padding:8px 16px;font-weight:700;color:#fff;cursor:pointer;
+              background:linear-gradient(90deg,#009b9b,#78be20)}
+  #onbMsg{font-size:12px;margin-top:6px;color:var(--ok);font-weight:600}
+
+  .section{display:none}.section.show{display:block}
+  .hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo"><i></i><i></i><i></i><i></i></span>
+  <span class="brand">PAC4200</span>
+  <span class="devlabel">NILM Live Monitor &nbsp;|&nbsp; Metering point: Lab bench</span>
+  <span class="badge">UI v5</span>
+  <div class="status">
+    <span id="hdrDetect" style="font-weight:800"></span>
+    <span id="dot" class="dot"></span><span id="statusText">IDLE</span>
+    <span id="age" class="devlabel"></span>
+    <span id="src" class="devlabel"></span>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <div class="nav">
+      <a class="active" data-sec="inst">Instantaneous values</a>
+      <a data-sec="nilm">NILM detection</a>
+    </div>
+    <h3>Input source</h3>
+    <div class="ctrl">
+      <label>Device / recording</label>
+      <select id="source"></select>
+      <label>Replay speed: <span id="speedLabel">3x</span></label>
+      <input id="speed" type="range" min="1" max="10" value="3">
+      <button class="b-go" onclick="start()">Start</button>
+      <button class="b-stop" onclick="stop()">Stop</button>
+      <button class="b-reset" onclick="reset()">Reset</button>
+    </div>
+
+    <h3>On / off events</h3>
+    <div id="sideEvents" class="sideEvents"><div class="none">no events yet</div></div>
+  </aside>
+
+  <main class="main">
+    <div id="stalebox" class="stalebox"></div>
+
+    <div class="banner">
+      <div class="lab">Devices on now</div>
+      <div id="devices" class="chips"><span class="none">none</span></div>
+    </div>
+
+    <div class="card">
+      <div class="hd" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <span>Aggregate active power P (W) &mdash; whole session, colour changes at each detected switch</span>
+        <button onclick="clearGraph()" title="Clear the chart, event log and device set without stopping the feed"
+                style="flex:none;font-size:12px;padding:4px 12px;border:1px solid var(--line);
+                       border-radius:6px;background:#eef2f4;color:var(--ink);cursor:pointer">Clear graph</button>
+      </div>
+      <div class="bd">
+        <canvas id="chart" width="1200" height="280"></canvas>
+        <div class="legend">Each coloured segment is a different device state. Dashed lines are detected switch events.</div>
+      </div>
+    </div>
+
+    <section id="sec-inst" class="section show">
+      <div class="crumb">Instantaneous values</div>
+      <div id="grid" class="grid"></div>
+      <div class="hint">Live totals measured at the metering point. Single-phase analyser, so phase L1 and system values are shown.</div>
+    </section>
+
+    <section id="sec-nilm" class="section">
+      <div class="crumb">NILM detection</div>
+
+      <div id="standCard" class="card" style="display:none">
+        <div class="hd" style="border-top-color:#2f7ec4;background:linear-gradient(180deg,#eef4fb,#e2ecf7);color:#245f96">Already running when monitoring started</div>
+        <div class="bd">
+          <div id="standMain" style="font-size:19px;font-weight:800;color:#245f96;margin:2px 0"></div>
+          <div class="kv">Confidence: <b id="standConf">0%</b></div>
+          <div class="bar"><span id="standBar" style="background:linear-gradient(90deg,#2f7ec4,#4a9ede)"></span></div>
+          <div class="rowv"><span class="k">Standing active power</span><span class="v"><span id="standP">0</span><span class="u">W</span></span></div>
+          <div class="rowv"><span class="k">Standing reactive power</span><span class="v"><span id="standQ">0</span><span class="u">var</span></span></div>
+          <div class="rowv"><span class="k">Current distortion</span><span class="v"><span id="standT">-</span><span class="u">%</span></span></div>
+          <div class="rowv" id="standAltRow"><span class="k">Other possible answers</span><span class="v" id="standAlt"></span></div>
+          <div id="standNote" class="hint"></div>
+        </div>
+      </div>
+
+      <div id="unkCard" class="card" style="display:none">
+        <div class="hd">Unidentified load &mdash; characterisation and training</div>
+        <div class="bd">
+          <div style="margin-bottom:6px"><span id="ltPill" class="lt resistive">resistive</span></div>
+          <div id="unkLabel" style="font-size:19px;font-weight:800;color:#a8641c;margin:4px 0"></div>
+          <div id="unkDesc" style="font-size:13px;line-height:1.5;margin-bottom:8px"></div>
+          <div class="rowv"><span class="k">Active power</span><span class="v"><span id="unkP">0</span><span class="u">W</span></span></div>
+          <div class="rowv"><span class="k">Reactive power</span><span class="v"><span id="unkQ">0</span><span class="u">var</span></span></div>
+          <div class="rowv"><span class="k">Apparent power</span><span class="v"><span id="unkS">0</span><span class="u">VA</span></span></div>
+          <div class="rowv"><span class="k">Power factor</span><span class="v" id="unkPF">0</span></div>
+          <div class="rowv"><span class="k">Closest known devices</span><span class="v" id="unkNear"></span></div>
+          <div class="onb">
+            <input id="onbName" placeholder="Name this device (e.g. Kettle)" />
+            <button onclick="onboard()">Label &amp; train</button>
+          </div>
+          <div id="onbMsg"></div>
+          <div class="hint">The name is the only thing the system cannot work out for itself. Everything after it is automatic.</div>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="card">
+          <div class="hd">Most recent switch</div>
+          <div class="bd">
+            <div id="matchName" class="big">-</div>
+            <div class="kv">Event: <b id="matchAction">-</b> &nbsp; State: <b id="matchState">idle</b></div>
+            <div class="kv">Confidence: <b id="confText">0%</b></div>
+            <div class="bar"><span id="confBar"></span></div>
+            <div class="kv" id="dp">&Delta;P event: -</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="hd">Event log</div>
+          <div class="bd"><div id="log" class="log"></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>{
+  document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));
+  a.classList.add('active');
+  $('sec-inst').classList.toggle('show', a.dataset.sec==='inst');
+  $('sec-nilm').classList.toggle('show', a.dataset.sec==='nilm');
+});
+$('speed').oninput=e=>$('speedLabel').textContent=e.target.value+'x';
+
+async function loadCsvs(){
+  const files=await (await fetch('/csvs')).json();
+  const sel=$('source'); sel.innerHTML='';
+  [['__livecsv__','LIVE (Node-RED file)'],['__meter__','LIVE METER (direct Modbus)']]
+    .forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;sel.appendChild(o);});
+  files.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;sel.appendChild(o);});
+}
+async function start(){await fetch('/start',{method:'POST',headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({source:$('source').value,speed:parseFloat($('speed').value)})});}
+async function stop(){await fetch('/stop',{method:'POST'});}
+async function reset(){await fetch('/reset',{method:'POST'}); $('onbMsg').textContent='';}
+async function clearGraph(){ await fetch('/clear',{method:'POST'}); }
+async function onboard(){
+  const name=$('onbName').value.trim();
+  if(!name){ $('onbMsg').style.color='#d94a3d'; $('onbMsg').textContent='Type a name first.'; return; }
+  const r=await (await fetch('/onboard',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name})})).json();
+  $('onbMsg').style.color = r.ok ? '#2f9e44' : '#d94a3d';
+  $('onbMsg').textContent = r.ok
+    ? `Learned "${r.name}" at ${r.p_w} W / ${r.q_var} var. It is now a known device (${r.known_devices} total).`
+    : ('Could not learn: ' + r.error);
+  if(r.ok) $('onbName').value='';
+}
+
+// segment palette: colour changes after every detected switch
+const SEG=['#009b9b','#78be20','#2f7ec4','#d9822b','#8256c4','#00a08a','#c2691c','#4a6fa5'];
+let startMs=null;
+function clockLabel(tsec){
+  if(startMs===null) return tsec.toFixed(0)+'s';
+  const d=new Date(startMs + tsec*1000);
+  return d.toTimeString().slice(0,8);
+}
+
+function drawChart(ts, ps, events){
+  const c=$('chart'); if(!c) return;
+  const ctx=c.getContext('2d'), W=c.width, H=c.height;
+  const padL=52, padR=12, padT=10, padB=26;
+  ctx.clearRect(0,0,W,H);
+  const gw=W-padL-padR, gh=H-padT-padB;
+
+  ctx.strokeStyle='#e6ebef'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const y=padT+gh*i/4;ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();}
+  ctx.fillStyle='#8b98a3'; ctx.font='11px Consolas,monospace';
+
+  if(!ts || ts.length<2){ ctx.fillText('waiting for data...',padL+6,padT+18); return; }
+
+  const t0=ts[0], t1=ts[ts.length-1], span=Math.max(t1-t0, 1e-6);
+  const maxP=Math.max(20,...ps)*1.15;
+  const X=t=>padL+gw*(t-t0)/span;
+  const Y=p=>padT+gh-(p/maxP)*gh;
+
+  for(let i=0;i<=4;i++){ctx.fillText(Math.round(maxP*(4-i)/4)+' W',6,padT+gh*i/4+4);}
+  // time axis (5 ticks) using real clock time
+  for(let i=0;i<=4;i++){
+    const tt=t0+span*i/4, x=X(tt);
+    ctx.fillText(clockLabel(tt), Math.min(Math.max(x-26,2), W-58), H-8);
+  }
+
+  // boundaries at each event -> one coloured, gradient-filled segment per state
+  const bounds=[t0, ...events.map(e=>e.t).filter(t=>t>t0&&t<t1).sort((a,b)=>a-b), t1];
+  for(let s=0;s<bounds.length-1;s++){
+    const a=bounds[s], b=bounds[s+1];
+    const idx=[]; for(let i=0;i<ts.length;i++) if(ts[i]>=a && ts[i]<=b) idx.push(i);
+    if(idx.length<2) continue;
+    const col=SEG[s%SEG.length];
+    // gradient fill under the segment
+    const g=ctx.createLinearGradient(0,padT,0,padT+gh);
+    g.addColorStop(0, col+'66'); g.addColorStop(1, col+'08');
+    ctx.beginPath(); ctx.moveTo(X(ts[idx[0]]), padT+gh);
+    idx.forEach(i=>ctx.lineTo(X(ts[i]), Y(ps[i])));
+    ctx.lineTo(X(ts[idx[idx.length-1]]), padT+gh); ctx.closePath();
+    ctx.fillStyle=g; ctx.fill();
+    // the line itself
+    ctx.beginPath(); idx.forEach((i,k)=>{const x=X(ts[i]),y=Y(ps[i]); k?ctx.lineTo(x,y):ctx.moveTo(x,y);});
+    ctx.strokeStyle=col; ctx.lineWidth=2; ctx.stroke();
+  }
+
+  // event markers + labels, at the true step time
+  ctx.setLineDash([5,4]); ctx.lineWidth=1.4;
+  events.forEach(e=>{
+    if(e.t<t0||e.t>t1) return;
+    const x=X(e.t);
+    ctx.strokeStyle = e.action==='ON' ? '#2f9e44' : '#d9822b';
+    ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+gh); ctx.stroke();
+    ctx.fillStyle = e.action==='ON' ? '#2f9e44' : '#b8701f';
+    ctx.font='10px "Segoe UI"';
+    const lab=(e.action==='ON'?'\u2191 ':'\u2193 ')+e.device;
+    ctx.fillText(lab.slice(0,26), Math.min(x+4, W-padR-140), padT+13);
+    ctx.font='11px Consolas,monospace';
+  });
+  ctx.setLineDash([]);
+}
+
+let built=false;
+async function poll(){
+  try{
+    const s=await (await fetch('/state')).json();
+    if(s.start_iso){ const ms=Date.parse(s.start_iso.replace(' ','T')); startMs=isNaN(ms)?null:ms; }
+    else startMs=null;
+
+    const stale = s.running && s.age_s>3;
+    $('dot').className='dot'+(s.running?(stale?' stale':' live'):'');
+    $('statusText').textContent=s.running?(stale?'STALE':'RUNNING'):'IDLE';
+    $('age').textContent=(s.running&&s.age_s>=0)?('data '+s.age_s+'s old · '+s.rows_read+' rows'):'';
+    $('src').textContent=s.source&&s.source!=='-'?('· '+s.source):'';
+    const sb=$('stalebox');
+    if(stale){ sb.style.display='block';
+      sb.textContent='No new rows for '+s.age_s+' s. Node-RED may have stopped writing, or it is writing to a different file than LIVE_CSV_PATH. The values below are old.'; }
+    else sb.style.display='none';
+
+    const dv=$('devices');
+    dv.innerHTML=s.devices.length?s.devices.map(d=>`<span class="chip">${d}</span>`).join(''):'<span class="none">none</span>';
+    $('hdrDetect').textContent=s.devices.length?('ON: '+s.devices.join(', ')):'';
+
+    if(!built && s.elec_meta){ const g=$('grid'); g.innerHTML='';
+      s.elec_meta.forEach(([k,l,u])=>{g.insertAdjacentHTML('beforeend',
+        `<div class="card" style="margin:0"><div class="hd">${l}</div><div class="bd">
+         <div class="rowv"><span class="k">L1 / system</span>
+         <span class="v"><span id="v_${k}">0</span><span class="u">${u}</span></span></div></div></div>`);});
+      built=true; }
+    if(s.elec_meta) s.elec_meta.forEach(([k])=>{const el=$('v_'+k); if(el) el.textContent=s.elec[k];});
+
+    const mn=$('matchName'); mn.textContent=s.match||'-';
+    mn.className='big'+(s.match_state==='off'?' off':'');
+    $('matchAction').textContent=s.last_action||'-';
+    $('matchState').textContent=s.match_state||'idle';
+    $('confText').textContent=(s.confidence||0)+'%';
+    $('confBar').style.width=(s.confidence||0)+'%';
+    $('dp').innerHTML='&Delta;P event: '+(s.last_dp>0?'+':'')+(s.last_dp||0)+' W';
+    $('log').innerHTML=(s.events||[]).map(e=>
+      `<div><span class="${e.action==='ON'?'on':'off'}">${clockLabel(e.t)} ${e.action==='ON'?'\u2191':'\u2193'} ${e.device}</span>`
+      +` &Delta;P=${e.dp>0?'+':''}${e.dp}W (${e.conf}%)</div>`).join('');
+
+    // same events, compact, always visible in the left sidebar
+    const se=$('sideEvents');
+    if(se){ const evs=s.events||[];
+      se.innerHTML = evs.length ? evs.map(e=>
+        `<div class="ev"><span class="d ${e.action==='ON'?'on':'off'}">`
+        +`${e.action==='ON'?'\u2191':'\u2193'} ${e.device}</span>`
+        +`<span class="t">${clockLabel(e.t)}</span></div>`).join('')
+        : '<div class="none">no events yet</div>';
+    }
+
+    drawChart(s.hist_t||[], s.hist_p||[], s.events||[]);
+
+    const st2=s.standing, sc=$('standCard');
+    if(st2){ sc.style.display='block';
+      $('standMain').textContent = st2.idle ? 'Nothing was drawing power'
+        : (st2.devices.length ? st2.devices.join(' + ') : 'Standing load not recognised');
+      $('standConf').textContent=(st2.confidence||0)+'%';
+      $('standBar').style.width=(st2.confidence||0)+'%';
+      $('standP').textContent=st2.p_w!==undefined?st2.p_w:'-';
+      $('standQ').textContent=st2.q_var!==undefined?st2.q_var:'-';
+      $('standT').textContent=st2.thd_i!==null&&st2.thd_i!==undefined?st2.thd_i:'-';
+      const alts=(st2.alternatives||[]).map(a=>a.devices.join('+')+' ('+a.residual+')').join(', ');
+      $('standAlt').textContent=alts||'none';
+      $('standAltRow').style.display=alts?'flex':'none';
+      $('standNote').textContent=st2.note||'';
+    } else sc.style.display='none';
+
+    const uk=s.unknown, uc=$('unkCard');
+    if(uk){ uc.style.display='block';
+      const pill=$('ltPill'); pill.className='lt '+uk.class; pill.textContent=uk.class;
+      $('unkLabel').textContent=uk.label; $('unkDesc').textContent=uk.description;
+      $('unkP').textContent=uk.p_w; $('unkQ').textContent=uk.q_var;
+      $('unkS').textContent=uk.s_va; $('unkPF').textContent=uk.pf;
+      $('unkNear').textContent=(uk.nearest||[]).map(n=>n.device+' ('+n.distance+')').join(', ');
+    } else uc.style.display='none';
+  }catch(e){}
+  setTimeout(poll,250);
+}
+loadCsvs(); poll();
+</script>
+</body>
+</html>

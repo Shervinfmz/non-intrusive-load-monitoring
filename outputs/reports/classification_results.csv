@@ -1,0 +1,4 @@
+model,synthetic_test_acc,real_acc,real_correct
+RandomForest,1.0,1.0,29/29
+LogisticReg,1.0,0.759,22/29
+kNN(k=5),0.997,0.586,17/29

@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets / local configuration
+.env
+.env.*
+!.env.example
+
+# Local/live files
+live.csv
+live2.csv
+
+# Local datasets and generated data
+data/raw/
+data/clean/
+data/synthetic/
+webapp/recordings/*.csv
+
+# Generated figures/logs
+*.log
+*.tmp
