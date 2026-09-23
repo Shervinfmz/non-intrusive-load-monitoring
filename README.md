@@ -1,4 +1,4 @@
-# Non-Intrusive Load Monitoring (NILM)
+# Non-Intrusive-Load-Monitoring (NILM)
 
 A machine-learning based **Non-Intrusive Load Monitoring (NILM)** system using electrical measurements from a **Siemens SENTRON PAC4200** power meter to identify individual appliances from aggregate power data.
 
